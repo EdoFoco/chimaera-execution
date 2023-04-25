@@ -1,0 +1,41 @@
+{
+  "name": "libra",
+  "version": "1.0.0",
+  "description": "Swap signal detector. Analysing groups of wallets and triggering swap notifications when rules are met. ",
+  "main": "app.ts",
+  "scripts": {
+    "dev": "ts-node-dev --respawn -- src/app.ts",
+    "start": "ts-node src/app.ts",
+    "test": "jest",
+    "test:cover": "jest --config ./jest.config.ts --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --watchAll=false",
+    "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
+    "lint": "eslint . --ext .ts"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.1",
+    "@types/node": "^18.15.12",
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "eslint": "^8.18.0",
+    "jest": "^28.1.1",
+    "ts-jest": "^28.0.4",
+    "ts-node-dev": "^2.0.0"
+  },
+  "dependencies": {
+    "abi-decoder": "^2.4.0",
+    "alchemy-sdk": "^2.8.0",
+    "dotenv": "^16.0.1",
+    "ethers": "^6.3.0",
+    "reflect-metadata": "^0.1.13",
+    "typedi": "^0.10.0"
+  },
+  "keywords": [
+    "ethereum",
+    "crypto",
+    "wallet",
+    "eth",
+    "telegram"
+  ],
+  "author": "Edoardo Foco",
+  "license": "ISC"
+}
