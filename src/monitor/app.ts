@@ -1,28 +1,33 @@
 import 'reflect-metadata';
-import mongoose from "mongoose";
-import { config } from './config';
-import { GroupRepository } from "../dal/repos/mongodb/GroupRepository";
-import { IGroup } from "../models/IGroup";
 import Container from "typedi";
+import mongoose from "mongoose";
+import { Logger } from './services/Logger';
+import { buildConfig } from '../config/Config';
+import { MongoConfig } from 'src/config/MongoConfig';
+import { Alchemy } from 'alchemy-sdk';
+import { WalletTracker } from './services/WalletTracker';
 
 
 // Try Catch wrapper with poller to see changes in groups, update wallets to monitor
 const main = async () => {
 
-    await mongoose
-    .connect(config.mongo.url, { retryWrites: true, w: 'majority' });
-   
-    console.log("Db connected.");
+    const config = buildConfig();
+    Container.set("alchemy", new Alchemy(config.alchemy));
 
-    const groupRepo = Container.get(GroupRepository);
+    const logger = Container.get(Logger);
+    const monitor = Container.get(WalletTracker);
 
-    const newGroup = <IGroup>{
-        name: "hello2",
-        wallets: new Map<string, string>()
-    };
-    newGroup.wallets.set("helloWorld", "helloworld");
-    await groupRepo.createGroup(newGroup);
-    await groupRepo.getAll();
+    logger.info("Libra - Even Your Odds is starting...  ")
+    await initDb(config.mongo);
+    logger.info("Db connected.");
+
+    await monitor.monitorGroups();
+    logger.info("Libra is monitoring...");
+}
+
+const initDb = async(config: MongoConfig) => {
+    return await mongoose
+    .connect(config.url, { retryWrites: true, w: 'majority' });
 }
 
 main().catch((err) => {

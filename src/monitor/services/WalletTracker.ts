@@ -1,0 +1,92 @@
+import { Inject, Service } from "typedi";
+import { Alchemy, AlchemyMinedTransactionsAddress, AlchemySubscription, NonEmptyArray } from "alchemy-sdk";
+import { GroupRepository } from "../../dal/repos/mongodb/GroupRepository";
+import { Logger } from "./Logger";
+import { IGroup } from "../../models/IGroup";
+import { Transaction } from "ethers";
+import { TransactionHandler } from "./TransactionHandler";
+
+@Service()
+export class WalletTracker {
+    /**
+    *    This class is used as a controller. It's responsibility is to setup the websocket and listen to
+    *    transactions from a list of wallets, then forward the transaction to a transaction handler.
+    *    The list of groups/wallets will need updating once in a while as these values will change over time.
+    **/
+    private readonly provider: Alchemy;
+    private readonly groupRepo: GroupRepository;
+    private readonly transactionHandler: TransactionHandler;
+    private readonly logger: Logger;
+    private walletGroupsMap:  Map<string, Set<string>>;
+
+    constructor(@Inject("alchemy") provider: Alchemy, groupRepo: GroupRepository, 
+        transactionHandler: TransactionHandler, logger: Logger) {
+        this.provider = provider;
+        this.groupRepo = groupRepo;
+        this.transactionHandler = transactionHandler;
+        this.logger = logger;
+    }
+
+    async monitorGroups(): Promise<void> {
+        const groups = await this.groupRepo.getAll();
+        this.walletGroupsMap = this.createWalletGroupsMap(groups);
+
+        const walletAddress = Array.from(this.walletGroupsMap.keys());
+        const mappedAddresses = walletAddress.map((a) => <AlchemyMinedTransactionsAddress>{ from: a });
+
+        if(mappedAddresses.length === 0){
+            this.logger.error("No wallets found. Libra won't monitor.");
+            return;
+        }
+
+        this.provider.ws.on(
+            {
+              method: AlchemySubscription.MINED_TRANSACTIONS,
+              addresses: <NonEmptyArray<AlchemyMinedTransactionsAddress>> mappedAddresses
+            },
+            async (tx: any) => {
+              try {
+                const castedTx = <Transaction> tx['transaction'];
+                await this.transactionHandler.handleTransaction(castedTx, this.walletGroupsMap);
+              } catch (e) {
+                this.logger.error(e);
+              }
+            }
+        );
+    }
+
+    createWalletGroupsMap(groups: IGroup[]):  Map<string, Set<string>>{
+        const walletGroupsMap = new Map<string, Set<string>>(); // wallet address => group names
+        groups.forEach((g) => { 
+            [...g.wallets.keys()].forEach((w) => {
+                const wa = w.toLowerCase();
+                if(walletGroupsMap.has(wa)) {
+                    const groupsForWallet = walletGroupsMap.get(wa);
+                    if(!(groupsForWallet?.has(g.name))){
+                        groupsForWallet?.add(g.name);
+                    }
+                }
+                else {
+                    walletGroupsMap.set(wa, new Set<string>());
+                    walletGroupsMap.get(wa)?.add(g.name);
+                };
+            })
+        });
+
+        return walletGroupsMap;
+    }
+}
+
+
+// Get a transaction from a wallet
+// See if it is an ERC20 transaction
+// Get all the groups the wallet belongs to (have it passed from the controller)
+// foreach group, 
+//// get GroupData
+//// if the token is not in tokens tracked (relative to the group), add it and add caller
+//// else add caller to the tracked token
+//// get bought tokens
+//// apply rules
+//// if there is a signal then
+////  if it doesn't exist add to tokens bought and trade
+////  else add caller to callers
