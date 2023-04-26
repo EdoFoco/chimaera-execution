@@ -1,17 +1,30 @@
 import { Transaction } from "ethers";
 import { Service } from "typedi";
+import { SwapService } from "./SwapService";
+import { AlchemyClient } from "../../clients/AlchemyClient";
+import { Logger } from "./Logger";
 
 @Service()
 export class TransactionHandler {
+    private readonly swapService: SwapService;
+    private readonly nodeClient: AlchemyClient;
+    private readonly logger: Logger;
 
-    
-    constructor() {
-        
+    constructor(swapService: SwapService, nodeClient: AlchemyClient, logger: Logger) {
+        this.swapService = swapService;
+        this.nodeClient = nodeClient;
+        this.logger = logger;
     }
 
     async handleTransaction(tx: Transaction, walletGroupsMap: Map<string, Set<string>>): Promise<void>{
         if(!tx.from || !walletGroupsMap.has(tx.from.toLowerCase())) return;
-        console.log(tx);
+        
+        if(!this.swapService.isSwapTransaction(tx.to)) console.log("not a swap transaction");
+         
+        const txDetails = await this.nodeClient.getTransactionDetails(tx.hash!);
+        if(txDetails === null) return;
+
+        this.logger.info(txDetails);
     }
 }
 

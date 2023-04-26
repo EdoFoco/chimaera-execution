@@ -14,6 +14,7 @@ const main = async () => {
     const config = buildConfig();
     Container.set("alchemy", new Alchemy(config.alchemy));
     Container.set("syncIntervalMin", config.walletTracker.syncIntervalMin);
+    Container.set("swapRouterAddresses", process.env.SWAP_SERVICE_SWAP_ROUTER_ADDRESSES);
 
     const logger = Container.get(Logger);
     const monitor = Container.get(WalletTracker);
