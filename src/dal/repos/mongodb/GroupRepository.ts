@@ -6,19 +6,17 @@ import GroupDomain from './domains/GroupDomain';
 @Service()
 export class GroupRepository{
   
-    async createGroup(group: IGroup) {
+    async createGroup(group: IGroup): Promise<IGroup> {
         const groupDomain = new GroupDomain({
             _id: new mongoose.Types.ObjectId(),
             name: group.name,
             wallets: group.wallets
         });
     
-        const resp = await groupDomain.save();
-        console.log(resp);
+        return await groupDomain.save();
     };
 
-    async getAll() {
-        const resp = await GroupDomain.find({});
-        console.log(resp);
+    async getAll(): Promise<IGroup[]> {
+        return await GroupDomain.find({});
     };
 }
