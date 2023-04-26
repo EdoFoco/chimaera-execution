@@ -13,6 +13,7 @@ const main = async () => {
 
     const config = buildConfig();
     Container.set("alchemy", new Alchemy(config.alchemy));
+    Container.set("syncIntervalMin", config.walletTracker.syncIntervalMin);
 
     const logger = Container.get(Logger);
     const monitor = Container.get(WalletTracker);

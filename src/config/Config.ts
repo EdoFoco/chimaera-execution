@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import { MongoConfig } from './MongoConfig';
 import { AlchemySettings, Network } from 'alchemy-sdk';
 import { TelegramConfig } from './TelegramConfig';
+import { WalletTrackerConfig } from './WalletTrackerConfig';
 
 dotenv.config();
 
@@ -9,6 +10,7 @@ export class Config{
     mongo: MongoConfig;
     alchemy: AlchemySettings;
     telegram: TelegramConfig;
+    walletTracker: WalletTrackerConfig;
 }
 
 export function buildConfig(): Config {
@@ -33,6 +35,9 @@ export function buildConfig(): Config {
         telegram: {
             apiUrl: process.env.TG_API_URL ?? '',
             apiKey: process.env.TG_API_KEY ?? '',
+        },
+        walletTracker: {
+            syncIntervalMin: process.env.WALLET_TRACKER_SYNC_INTERVAL_MIN ?  parseInt(process.env.WALLET_TRACKER_SYNC_INTERVAL_MIN) : 15
         }
     };
 }
