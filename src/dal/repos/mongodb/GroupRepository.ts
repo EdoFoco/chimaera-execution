@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import mongoose from 'mongoose';
-import { IGroup } from '../../../models/IGroup';
+import { IGroup } from '../../../types/IGroup';
 import GroupDomain from './domains/GroupDomain';
 
 @Service()

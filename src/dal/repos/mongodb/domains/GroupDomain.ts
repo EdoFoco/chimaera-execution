@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { IGroup } from '../../../../models/IGroup';
+import { IGroup } from '../../../../types/IGroup';
 
 export interface IGroupDomain extends IGroup, Document {}
 

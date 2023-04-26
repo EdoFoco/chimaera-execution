@@ -2,7 +2,7 @@ import { Inject, Service } from "typedi";
 import { Alchemy, AlchemyMinedTransactionsAddress, AlchemySubscription, NonEmptyArray } from "alchemy-sdk";
 import { GroupRepository } from "../../dal/repos/mongodb/GroupRepository";
 import { Logger } from "./Logger";
-import { IGroup } from "../../models/IGroup";
+import { IGroup } from "../../types/IGroup";
 import { Transaction } from "ethers";
 import { TransactionHandler } from "./TransactionHandler";
 
@@ -39,6 +39,7 @@ export class WalletTracker {
                 this.logger.error("No wallets found. Libra won't monitor.");
             }
 
+            console.log(mappedAddresses);
             this.provider.ws.removeAllListeners();
             this.provider.ws.on({
                 method: AlchemySubscription.MINED_TRANSACTIONS,
@@ -80,17 +81,3 @@ export class WalletTracker {
         return walletGroupsMap;
     }
 }
-
-
-// Get a transaction from a wallet
-// See if it is an ERC20 transaction
-// Get all the groups the wallet belongs to (have it passed from the controller)
-// foreach group, 
-//// get GroupData
-//// if the token is not in tokens tracked (relative to the group), add it and add caller
-//// else add caller to the tracked token
-//// get bought tokens
-//// apply rules
-//// if there is a signal then
-////  if it doesn't exist add to tokens bought and trade
-////  else add caller to callers
