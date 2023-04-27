@@ -24,7 +24,8 @@ export class TransactionHandler {
         const txDetails = await this.nodeClient.getTransactionDetails(tx.hash!);
         if(txDetails === null) return;
 
-        this.logger.info(txDetails);
+        const swapDetails = this.swapService.decodeTransaction(txDetails);
+        this.logger.debug(swapDetails);
     }
 }
 

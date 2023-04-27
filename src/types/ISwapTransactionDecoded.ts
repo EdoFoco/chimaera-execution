@@ -6,4 +6,5 @@ export interface ISwapTransactionDecoded{
     amountIn: string;
     amountOut: string;
     path: string[];
+    payerIsUser: boolean;
 }

@@ -3,6 +3,7 @@ import { MongoConfig } from './MongoConfig';
 import { AlchemySettings, Network } from 'alchemy-sdk';
 import { TelegramConfig } from './TelegramConfig';
 import { WalletTrackerConfig } from './WalletTrackerConfig';
+import { SwapsConfig } from './SwapsConfig';
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ export class Config{
     alchemy: AlchemySettings;
     telegram: TelegramConfig;
     walletTracker: WalletTrackerConfig;
+    swaps: SwapsConfig;
 }
 
 export function buildConfig(): Config {
@@ -38,6 +40,11 @@ export function buildConfig(): Config {
         },
         walletTracker: {
             syncIntervalMin: process.env.WALLET_TRACKER_SYNC_INTERVAL_MIN ?  parseInt(process.env.WALLET_TRACKER_SYNC_INTERVAL_MIN) : 15
+        },
+        swaps: {
+            uniswapUniversalRouterAddress: process.env.UNISWAP_UV_ROUTER_ADDRESS,
+            uniswapV2RouterAddress: process.env.UNISWAP_V2_ROUTER_ADDRESS,
+            oneInchV5RouterAddress: process.env.ONEINCH_V5_ROUTER_ADDRESS
         }
     };
 }

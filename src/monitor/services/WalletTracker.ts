@@ -39,7 +39,6 @@ export class WalletTracker {
                 this.logger.error("No wallets found. Libra won't monitor.");
             }
 
-            console.log(mappedAddresses);
             this.provider.ws.removeAllListeners();
             this.provider.ws.on({
                 method: AlchemySubscription.MINED_TRANSACTIONS,

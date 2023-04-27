@@ -1,20 +1,31 @@
 import 'reflect-metadata';
 import Container from "typedi";
 import mongoose from "mongoose";
+import { Alchemy } from 'alchemy-sdk';
+import { ISwapDecoder } from '../types';
 import { Logger } from './services/Logger';
 import { buildConfig } from '../config/Config';
-import { MongoConfig } from 'src/config/MongoConfig';
-import { Alchemy } from 'alchemy-sdk';
+import { MongoConfig } from '../config/MongoConfig';
 import { WalletTracker } from './services/WalletTracker';
+import { OneInchV5RouterDecoder, UniswapUniversalRouterDecoder, UniswapV2RouterDecoder } from './services/swap-decoders';
 
 
-// Try Catch wrapper with poller to see changes in groups, update wallets to monitor
 const main = async () => {
 
     const config = buildConfig();
     Container.set("alchemy", new Alchemy(config.alchemy));
     Container.set("syncIntervalMin", config.walletTracker.syncIntervalMin);
-    Container.set("swapRouterAddresses", process.env.SWAP_SERVICE_SWAP_ROUTER_ADDRESSES);
+    Container.set("uniswapUniversalRouterAddress", config.swaps.uniswapUniversalRouterAddress);
+    Container.set("uniswapV2RouterAddress", config.swaps.uniswapV2RouterAddress);
+    Container.set("oneinchV5RouterAddress", config.swaps.oneInchV5RouterAddress);
+
+    const swapDecoders: ISwapDecoder[] = [
+        Container.get(UniswapUniversalRouterDecoder),
+        Container.get(UniswapV2RouterDecoder),
+        Container.get(OneInchV5RouterDecoder)
+    ];
+
+    Container.set("swapDecoders", swapDecoders);
 
     const logger = Container.get(Logger);
     const monitor = Container.get(WalletTracker);
