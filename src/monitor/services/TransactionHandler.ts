@@ -33,7 +33,7 @@ export class TransactionHandler {
         
         const sender = tx.from!.toLowerCase();
 
-        if(!this.swapService.isSwapTransaction(tx.to)) this.logger.debug("Not a swap transaction");
+        if(!this.swapService.isSwapTransaction(tx.to)) return;
          
         // Find what token is being swapped
         const txDetails = await this.nodeClient.getTransactionDetails(tx.hash!);
