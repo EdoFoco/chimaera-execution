@@ -5,7 +5,7 @@ export interface ITokenDomain extends IToken, Document {}
 
 const TokenSchema: Schema = new Schema(
     {
-        name: { type: String, required: true },
+        name: { type: String, required: false },
         address: { type: String, required: true },
     }
 );
