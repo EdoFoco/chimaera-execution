@@ -20,7 +20,7 @@ export class MinCallersBuyProcessor implements IRuleProcessor {
         const { params } = <IMinCallersBuyRule> rule;
         
         if(token.buysCount >= params.minCallers){
-            const message = `Buy signal from ${group.name}.\nToken bought from at least ${params.minCallers}.\nContract Address: ${token.address}`;
+            const message = `Buy signal from ${group.name}.\nToken bought by ${token.buysCount} callers.\nContract Address: ${token.address}`;
             this.logger.info(message);
             await this.notifier.send('-810655170', message);
         }
