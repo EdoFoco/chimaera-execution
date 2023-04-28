@@ -6,6 +6,7 @@ import { Logger } from "./Logger";
 import { TokenService } from "./TokenService";
 import { GroupRepository } from "../../dal/repos/mongodb/GroupRepository";
 import { ICaller, IGroup, ITrackedToken } from "../../types";
+import { RuleProcessorFactory } from "./rule-processors/RuleProcessorFactory";
 
 @Service()
 export class TransactionHandler {
@@ -13,13 +14,17 @@ export class TransactionHandler {
     private readonly nodeClient: AlchemyClient;
     private readonly tokenService: TokenService;
     private readonly groupRepo: GroupRepository;
+    private readonly ruleProcessorFactory: RuleProcessorFactory;
     private readonly logger: Logger;
 
-    constructor(swapService: SwapService, nodeClient: AlchemyClient, tokenService: TokenService, groupRepo: GroupRepository, logger: Logger) {
+    constructor(swapService: SwapService, nodeClient: AlchemyClient, tokenService: TokenService, 
+        groupRepo: GroupRepository, ruleProcessorFactory: RuleProcessorFactory, logger: Logger) {
+
         this.swapService = swapService;
         this.nodeClient = nodeClient;
         this.tokenService = tokenService;
         this.groupRepo = groupRepo;
+        this.ruleProcessorFactory = ruleProcessorFactory;
         this.logger = logger;
     }
 
@@ -58,16 +63,14 @@ export class TransactionHandler {
             if(walletGroupNamesSet.has(wg.name)){
                 walletGroups.push(wg);
             }
-        })
-        
+        });
 
-        // Todo: Optimize this funcion. Currently running at O(n2)
         for(let i = 0; i < walletGroups.length; i++){
             const wg = walletGroups[i];
+            // Todo: Optimize this. Currently running at O(n2)
             let trackedToken = wg.trackedTokens.find((t) => t.address.toLowerCase() === token.address.toLowerCase());
             const boughtAt = new Date();
             if(!trackedToken){
-                this.logger.debug('ere');
                 trackedToken = <ITrackedToken>{
                     address: token.address.toLowerCase(),
                     buysCount: 1,
@@ -79,9 +82,9 @@ export class TransactionHandler {
                     date: boughtAt
                 });
                 wg.trackedTokens.push(trackedToken);
-                console.log('wg', wg);
             }
             else{
+                // Todo: Optimize this. Currently running at O(n2)
                 let callerIndex = trackedToken.callers.findIndex((c) => c.address === sender);
                 // Only track the 1st interaction per caller
                 if(callerIndex === -1){
@@ -91,6 +94,16 @@ export class TransactionHandler {
                 }
             }
             await this.groupRepo.updateTrackedTokens(wg);
+            
+            const sortedRules = wg.rules.sort((a,b) => a.priority > b.priority ? 1 : -1);
+            for(let k = 0; k < sortedRules.length; k++){
+                const processor = this.ruleProcessorFactory.getRuleProcessorForRule(wg.rules[k].type);
+                if(!processor){
+                    this.logger.error(`Unsupported rule type: ${wg.rules[k].type}`);
+                    continue;
+                }
+                await processor.processRule(wg, wg.rules[k], trackedToken);
+            }
         }
     }
 }

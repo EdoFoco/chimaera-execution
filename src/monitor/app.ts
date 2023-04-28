@@ -7,6 +7,8 @@ import { Logger } from './services/Logger';
 import { buildConfig } from '../config/Config';
 import { MongoConfig } from '../config/MongoConfig';
 import { WalletTracker } from './services/WalletTracker';
+import { IRuleProcessor } from './services/rule-processors/IRuleProcessor';
+import { MinCallersBuyProcessor } from './services/rule-processors/MinCallersBuyProcessor';
 import { OneInchV5RouterDecoder, UniswapUniversalRouterDecoder, UniswapV2RouterDecoder } from './services/swap-decoders';
 
 
@@ -19,14 +21,19 @@ const main = async () => {
     Container.set("uniswapV2RouterAddress", config.swaps.uniswapV2RouterAddress);
     Container.set("oneinchV5RouterAddress", config.swaps.oneInchV5RouterAddress);
     Container.set("ignoreTokens", config.tokenService.ignoreTokenAddresses.trim().split(','));
-    
+
     const swapDecoders: ISwapDecoder[] = [
         Container.get(UniswapUniversalRouterDecoder),
         Container.get(UniswapV2RouterDecoder),
         Container.get(OneInchV5RouterDecoder)
     ];
 
+    const ruleProcessors: IRuleProcessor[] = [
+        Container.get(MinCallersBuyProcessor),
+    ]
+
     Container.set("swapDecoders", swapDecoders);
+    Container.set("ruleProcessors", ruleProcessors);
 
     const logger = Container.get(Logger);
     const monitor = Container.get(WalletTracker);
