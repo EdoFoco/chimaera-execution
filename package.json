@@ -8,7 +8,7 @@
     "start": "ts-node src/monitor/app.ts",
     "test": "jest",
     "test:cover": "jest --config ./jest.config.ts --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --watchAll=false",
-    "build": "rm -rf ./dist && tsc --project tsconfig.build.json",
+    "build": "tsc",
     "lint": "eslint . --ext .ts"
   },
   "devDependencies": {
