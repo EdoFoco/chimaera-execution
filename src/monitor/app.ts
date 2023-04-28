@@ -21,7 +21,8 @@ const main = async () => {
     Container.set("uniswapV2RouterAddress", config.swaps.uniswapV2RouterAddress);
     Container.set("oneinchV5RouterAddress", config.swaps.oneInchV5RouterAddress);
     Container.set("ignoreTokens", config.tokenService.ignoreTokenAddresses.trim().split(','));
-
+    Container.set("telegramConfig", config.telegram);
+    
     const swapDecoders: ISwapDecoder[] = [
         Container.get(UniswapUniversalRouterDecoder),
         Container.get(UniswapV2RouterDecoder),

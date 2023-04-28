@@ -14,6 +14,7 @@ export class RuleProcessorFactory {
     }
 
     getRuleProcessorForRule(ruleType: RuleTypeEnum): IRuleProcessor | undefined{
+        console.log(this.ruleProcessors);
         return this.ruleProcessors.get(ruleType);
     }
 }

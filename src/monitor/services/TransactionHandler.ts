@@ -50,8 +50,6 @@ export class TransactionHandler {
         const token = await this.tokenService.getOrCreateToken(boughtTokenAddr);
         if(!token) return;
 
-        this.logger.debug(token);
-
         // Foreach group check if token is being tracked, if not add. Then apply rules
         const walletGroupNamesSet = walletGroupsMap.get(tx.from.toLowerCase());
         if(!walletGroupNamesSet) return;
@@ -85,12 +83,12 @@ export class TransactionHandler {
             }
             else{
                 // Todo: Optimize this. Currently running at O(n2)
-                let callerIndex = trackedToken.callers.findIndex((c) => c.address === sender);
+                let callerIndex = trackedToken.callers.findIndex((c) => c.address.toLowerCase() === sender.toLocaleLowerCase());
                 // Only track the 1st interaction per caller
                 if(callerIndex === -1){
                     trackedToken.buysCount += 1;
                     trackedToken.lastBought = boughtAt;
-                    trackedToken.callers[callerIndex].date = boughtAt;
+                    trackedToken.callers.push(<ICaller> { address: sender, date: boughtAt });
                 }
             }
             await this.groupRepo.updateTrackedTokens(wg);

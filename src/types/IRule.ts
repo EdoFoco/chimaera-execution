@@ -4,5 +4,5 @@ export interface IRule {
 }
 
 export enum RuleTypeEnum{
-    MIN_CALLERS_BUY
+    MIN_CALLERS_BUY = "MIN_CALLERS_BUY"
 }
