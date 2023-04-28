@@ -37,7 +37,7 @@ export class UniswapV2RouterDecoder implements ISwapDecoder {
                     path: parsedTx.args[1]
                 }
             default:
-               this.logger.error(`UniswapV2 function non supported: ${parsedTx.name}`);
+               this.logger.error(`UniswapV2 function non supported: ${parsedTx.name}. Hash: ${tx.hash}`);
                return null;
         }
     }

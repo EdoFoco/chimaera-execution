@@ -4,10 +4,12 @@ import { TransactionResponse } from "alchemy-sdk";
 import { Interface, AbiCoder, Result } from "ethers";
 import { ISwapTransactionDecoded, ISwapDecoder } from "../../../types";
 import { UniswapUniversalRouterAbi } from "../../../abis/UniswapUniversalRouterAbi";
+import { Logger } from "../Logger";
 
 @Service()
 export class UniswapUniversalRouterDecoder implements ISwapDecoder{
     private readonly routerContract: Interface;
+    private readonly logger: Logger;
     private readonly swapCodes: Record<string, string> = {
         "00": "V3_SWAP_EXACT_IN",
         "01": "V3_SWAP_EXACT_OUT",
@@ -17,9 +19,10 @@ export class UniswapUniversalRouterDecoder implements ISwapDecoder{
 
     readonly contractAddress: string;
 
-    constructor(@Inject("uniswapUniversalRouterAddress") contractAddress: string) {
+    constructor(@Inject("uniswapUniversalRouterAddress") contractAddress: string, logger: Logger) {
         this.routerContract = new Interface(UniswapUniversalRouterAbi);
         this.contractAddress = contractAddress;
+        this.logger = logger;
     }
     
     getContractAddress(): string { return this.contractAddress; }
@@ -98,11 +101,12 @@ export class UniswapUniversalRouterDecoder implements ISwapDecoder{
                     payerIsUser: decoded[4]
                 }
             default:
-                console.info("No parseable execute function found in input.")
+                this.logger.error(`No parseable execute function found in input. Hash: ${tx.hash}`)
                 return null;
           }
         }
         catch(e: unknown){
+
             return null;
         }
     }
