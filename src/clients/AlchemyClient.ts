@@ -1,5 +1,5 @@
 import { Inject, Service } from "typedi";
-import { Alchemy, TransactionResponse } from "alchemy-sdk";
+import { Alchemy, TokenMetadataResponse, TransactionResponse } from "alchemy-sdk";
 
 @Service()
 export class AlchemyClient {
@@ -11,5 +11,9 @@ export class AlchemyClient {
 
     async getTransactionDetails(txHash: string) : Promise<TransactionResponse | null>{
         return await this.alchemy.core.getTransaction(txHash);
+    }
+
+    async getTokenMetadata(address: string) : Promise<TokenMetadataResponse | null>{
+        return await this.alchemy.core.getTokenMetadata(address);
     }
 }

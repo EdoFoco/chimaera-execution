@@ -10,7 +10,8 @@ export class GroupRepository{
         const groupDomain = new GroupDomain({
             _id: new mongoose.Types.ObjectId(),
             name: group.name,
-            wallets: group.wallets
+            wallets: group.wallets,
+            trackedTokens: group.trackedTokens
         });
     
         return await groupDomain.save();
@@ -19,4 +20,8 @@ export class GroupRepository{
     async getAll(): Promise<IGroup[]> {
         return await GroupDomain.find({});
     };
+
+    async updateTrackedTokens(group: IGroup): Promise<IGroup | null>{
+        return await GroupDomain.findOneAndUpdate({name: group.name}, { trackedTokens: group.trackedTokens });
+    }
 }

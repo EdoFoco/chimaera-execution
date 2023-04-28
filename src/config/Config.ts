@@ -4,6 +4,7 @@ import { AlchemySettings, Network } from 'alchemy-sdk';
 import { TelegramConfig } from './TelegramConfig';
 import { WalletTrackerConfig } from './WalletTrackerConfig';
 import { SwapsConfig } from './SwapsConfig';
+import { TokenServiceConfig } from './TokenServiceConfig';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ export class Config{
     telegram: TelegramConfig;
     walletTracker: WalletTrackerConfig;
     swaps: SwapsConfig;
+    tokenService: TokenServiceConfig
 }
 
 export function buildConfig(): Config {
@@ -45,6 +47,9 @@ export function buildConfig(): Config {
             uniswapUniversalRouterAddress: process.env.UNISWAP_UV_ROUTER_ADDRESS,
             uniswapV2RouterAddress: process.env.UNISWAP_V2_ROUTER_ADDRESS,
             oneInchV5RouterAddress: process.env.ONEINCH_V5_ROUTER_ADDRESS
+        },
+        tokenService: {
+            ignoreTokenAddresses: process.env.IGNORE_TOKEN_ADDRESSES
         }
     };
 }
