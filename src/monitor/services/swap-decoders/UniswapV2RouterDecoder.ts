@@ -36,6 +36,12 @@ export class UniswapV2RouterDecoder implements ISwapDecoder {
                     blockNum: tx.blockNumber,
                     path: parsedTx.args[1]
                 }
+            case 'swapExactTokensForTokensSupportingFeeOnTransferTokens':
+                return <ISwapTransactionDecoded>{
+                    hash: tx.hash,
+                    blockNum: tx.blockNumber,
+                    path: parsedTx.args[1]
+                }
             case 'swapExactETHForTokens':
                 return <ISwapTransactionDecoded>{
                     hash: tx.hash,
@@ -48,6 +54,13 @@ export class UniswapV2RouterDecoder implements ISwapDecoder {
                     blockNum: tx.blockNumber,
                     path: parsedTx.args[1]
                 }
+            case 'swapExactTokensForETH':
+                return <ISwapTransactionDecoded>{
+                    hash: tx.hash,
+                    blockNum: tx.blockNumber,
+                    path: parsedTx.args[1]
+                }
+                
             default:
                this.logger.error(`UniswapV2 function non supported: ${parsedTx.name}. Hash: ${tx.hash}`);
                return null;
