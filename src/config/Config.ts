@@ -39,6 +39,7 @@ export function buildConfig(): Config {
         telegram: {
             apiUrl: process.env.TG_API_URL ?? '',
             apiKey: process.env.TG_API_KEY ?? '',
+            chatId: process.env.TG_CHAT_ID ?? ''
         },
         walletTracker: {
             syncIntervalMin: process.env.WALLET_TRACKER_SYNC_INTERVAL_MIN ?  parseInt(process.env.WALLET_TRACKER_SYNC_INTERVAL_MIN) : 15

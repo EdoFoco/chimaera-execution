@@ -5,5 +5,6 @@ export interface ITrackedToken extends IToken {
     buysCount: number,
     callers: ICaller[],
     lastBought: Date,
-    rulesActioned: string[]
+    rulesActioned: string[],
+    buySignalTriggeredAt: Date | undefined
 }

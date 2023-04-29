@@ -4,15 +4,15 @@ import { Inject, Service } from 'typedi';
 
 @Service()
 export default class TelegramService {
-  private readonly _config: TelegramConfig;
+  private readonly config: TelegramConfig;
 
   constructor(@Inject("telegramConfig") config: TelegramConfig) {
-    this._config = config;
+    this.config = config;
   }
 
-  public send = async (receiver: string, text: string): Promise<boolean> => {
+  public send = async (text: string): Promise<boolean> => {
     const resp = await this.request('sendMessage', {
-      chat_id: receiver,
+      chat_id: this.config.chatId,
       text: text,
     });
 
@@ -26,7 +26,7 @@ export default class TelegramService {
     return new Promise((resolve, reject) => {
       const req = https
         .request(
-          `${this._config.apiUrl}/bot${this._config.apiKey}/${path}`,
+          `${this.config.apiUrl}/bot${this.config.apiKey}/${path}`,
           {
             method: 'POST',
             headers: {
