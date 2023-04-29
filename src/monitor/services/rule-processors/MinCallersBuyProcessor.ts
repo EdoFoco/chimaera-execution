@@ -3,7 +3,7 @@ import { IGroup, IRule, ITrackedToken, RuleTypeEnum, IMinCallersBuyRule } from "
 import { Logger } from "../Logger";
 import { IRuleProcessor } from "./IRuleProcessor";
 import TelegramService from "../TelegramService";
-import { GroupRepository } from "src/dal/repos/mongodb/GroupRepository";
+import { GroupRepository } from "../../../dal/repos/mongodb/GroupRepository";
 
 @Service()
 export class MinCallersBuyProcessor implements IRuleProcessor {
