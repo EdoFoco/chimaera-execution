@@ -34,7 +34,6 @@ export class WalletTracker {
             const walletGroupsMap = this.createWalletGroupsMap(groups);
             const walletAddress = Array.from(walletGroupsMap.keys());
             const mappedAddresses = walletAddress.map((a) => <AlchemyMinedTransactionsAddress>{ from: a });
-
             if(mappedAddresses.length === 0){
                 this.logger.error("No wallets found. Libra won't monitor.");
             }
