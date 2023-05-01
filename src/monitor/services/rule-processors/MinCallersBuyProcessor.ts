@@ -31,7 +31,7 @@ export class MinCallersBuyProcessor implements IRuleProcessor {
             await this.groupRepo.updateTrackedTokens(group);
 
             // Send message
-            const message = `<b>\u{1F680}\u{1F680}\u{1F680} Buy Signal \u{1F680}\u{1F680}\u{1F680} </b>\n<b>Group: </b>${group.name}\n<b>CA: </b>${token.address}\n<b>Hits: </b> 3\n<b>Chart: </b> https://www.dexview.com/eth/${token.address}`;
+            const message = `<b>\u{1F680}\u{1F680}\u{1F680} Buy Signal \u{1F680}\u{1F680}\u{1F680} </b>\n<b>Group: </b>${group.name}\n<b>Token: </b>${token.symbol}\n<b>CA: </b>${token.address}\n<b>Hits: </b> 3\n<b>Chart: </b> https://www.dexview.com/eth/${token.address}`;
             this.logger.info(message);
             await this.notifier.send(message);
         }
