@@ -1,5 +1,5 @@
 import { Inject, Service } from "typedi";
-import { Alchemy, AlchemyMinedTransactionsAddress, AlchemySubscription, NonEmptyArray } from "alchemy-sdk";
+import { Alchemy, AlchemyMinedTransactionsAddress, AlchemySubscription } from "alchemy-sdk";
 import { GroupRepository } from "../../dal/repos/mongodb/GroupRepository";
 import { Logger } from "./Logger";
 import { IGroup } from "../../types/IGroup";
@@ -40,13 +40,14 @@ export class WalletTracker {
 
             this.provider.ws.removeAllListeners();
             this.provider.ws.on({
-                method: AlchemySubscription.MINED_TRANSACTIONS,
-                addresses: <NonEmptyArray<AlchemyMinedTransactionsAddress>> mappedAddresses
+                method: AlchemySubscription.MINED_TRANSACTIONS
                 },
                 async (tx: any) => {
                     try {
                         const castedTx = <Transaction> tx['transaction'];
-                        await this.transactionHandler.handleTransaction(castedTx, walletGroupsMap);
+                        if(walletGroupsMap.has(castedTx.hash!.toLowerCase())){
+                            await this.transactionHandler.handleTransaction(castedTx, walletGroupsMap);
+                        }
                     } catch (e) {
                         this.logger.error(e);
                     }
