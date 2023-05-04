@@ -45,7 +45,7 @@ export class WalletTracker {
                 async (tx: any) => {
                     try {
                         const castedTx = <Transaction> tx['transaction'];
-                        if(walletGroupsMap.has(castedTx.hash!.toLowerCase())){
+                        if(walletGroupsMap.has(castedTx.from!.toLowerCase())){
                             await this.transactionHandler.handleTransaction(castedTx, walletGroupsMap);
                         }
                     } catch (e) {
