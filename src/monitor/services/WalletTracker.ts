@@ -1,5 +1,5 @@
 import { Inject, Service } from "typedi";
-import { Alchemy, AlchemyMinedTransactionsAddress, AlchemySubscription } from "alchemy-sdk";
+import { Alchemy, AlchemySubscription } from "alchemy-sdk";
 import { GroupRepository } from "../../dal/repos/mongodb/GroupRepository";
 import { Logger } from "./Logger";
 import { IGroup } from "../../types/IGroup";
@@ -18,6 +18,7 @@ export class WalletTracker {
     private readonly groupRepo: GroupRepository;
     private readonly transactionHandler: TransactionHandler;
     private readonly logger: Logger;
+    private walletGroupsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
 
     constructor(@Inject("syncIntervalMin") syncIntervalMin: number, @Inject("alchemy") provider: Alchemy, groupRepo: GroupRepository, 
         transactionHandler: TransactionHandler, logger: Logger) {
@@ -29,30 +30,25 @@ export class WalletTracker {
     }
 
     async monitorGroups(): Promise<void> {
+        this.provider.ws.on({
+            method: AlchemySubscription.MINED_TRANSACTIONS
+            },
+            async (tx: any) => {
+                try {
+                    const castedTx = <Transaction> tx['transaction'];
+                    if(this.walletGroupsMap.has(castedTx.from!.toLowerCase())){
+                        console.log(castedTx.hash);
+                        await this.transactionHandler.handleTransaction(castedTx, this.walletGroupsMap);
+                    }
+                } catch (e) {
+                    this.logger.error(e);
+                }
+            }
+        );
+        
         while(true){
             const groups = await this.groupRepo.getAll();
-            const walletGroupsMap = this.createWalletGroupsMap(groups);
-            const walletAddress = Array.from(walletGroupsMap.keys());
-            const mappedAddresses = walletAddress.map((a) => <AlchemyMinedTransactionsAddress>{ from: a });
-            if(mappedAddresses.length === 0){
-                this.logger.error("No wallets found. Libra won't monitor.");
-            }
-
-            this.provider.ws.removeAllListeners();
-            this.provider.ws.on({
-                method: AlchemySubscription.MINED_TRANSACTIONS
-                },
-                async (tx: any) => {
-                    try {
-                        const castedTx = <Transaction> tx['transaction'];
-                        if(walletGroupsMap.has(castedTx.from!.toLowerCase())){
-                            await this.transactionHandler.handleTransaction(castedTx, walletGroupsMap);
-                        }
-                    } catch (e) {
-                        this.logger.error(e);
-                    }
-                }
-            );
+            this.walletGroupsMap = this.createWalletGroupsMap(groups);
             this.logger.info(`Next data sync in ${this.syncIntervalMin} minutes...`);
             await new Promise(f => setTimeout(f, this.syncIntervalMin * 60 * 1000));
             this.logger.info('Syncing data...');
