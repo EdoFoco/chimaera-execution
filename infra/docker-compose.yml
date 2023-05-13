@@ -1,0 +1,23 @@
+version: "3"
+networks:
+  chimaera-dev:
+
+services:
+  ## User DB
+  chimaera-db:
+    image: postgres:15.2
+    networks:
+      - chimaera-dev
+    environment:
+      POSTGRES_DATABASE: "chimaera_db"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+    ports:
+      - "3307:3306"
+    expose:
+      - "3307"
+    volumes:
+      - chimaera-db:/var/lib/chimaera/postgres
+
+volumes:
+  chimaera-db:
