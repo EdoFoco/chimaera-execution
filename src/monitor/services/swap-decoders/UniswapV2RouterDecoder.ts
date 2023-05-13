@@ -25,48 +25,19 @@ export class UniswapV2RouterDecoder implements ISwapDecoder {
 
         switch(parsedTx.name){
             case 'swapExactETHForTokensSupportingFeeOnTransferTokens':
-                return <ISwapTransactionDecoded>{
-                    hash: tx.hash,
-                    blockNum: tx.blockNumber,
-                    path: parsedTx.args[1]
-                }
             case 'swapExactTokensForETHSupportingFeeOnTransferTokens':
-                return <ISwapTransactionDecoded>{
-                    hash: tx.hash,
-                    blockNum: tx.blockNumber,
-                    path: parsedTx.args[1]
-                }
             case 'swapExactTokensForTokensSupportingFeeOnTransferTokens':
-                return <ISwapTransactionDecoded>{
-                    hash: tx.hash,
-                    blockNum: tx.blockNumber,
-                    path: parsedTx.args[1]
-                }
             case 'swapExactETHForTokens':
-                return <ISwapTransactionDecoded>{
-                    hash: tx.hash,
-                    blockNum: tx.blockNumber,
-                    path: parsedTx.args[1]
-                }
             case 'swapETHForExactTokens':
-                return <ISwapTransactionDecoded>{
-                    hash: tx.hash,
-                    blockNum: tx.blockNumber,
-                    path: parsedTx.args[1]
-                }
             case 'swapExactTokensForETH':
-                return <ISwapTransactionDecoded>{
-                    hash: tx.hash,
-                    blockNum: tx.blockNumber,
-                    path: parsedTx.args[1]
-                }
             case 'swapExactTokensForTokens':
+            case 'swapTokensForExactTokens':
                 return <ISwapTransactionDecoded>{
                     hash: tx.hash,
                     blockNum: tx.blockNumber,
                     path: parsedTx.args[1]
                 }
-                
+            
             default:
                this.logger.error(`UniswapV2 function non supported: ${parsedTx.name}. Hash: ${tx.hash}`);
                return null;
