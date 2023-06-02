@@ -2,7 +2,7 @@ import { Inject, Service } from "typedi";
 import { AlchemyClient } from "../../clients/AlchemyClient";
 import { TokenRepository } from "../../dal/repos/mongodb/TokenRepository";
 import { IToken } from "../../types";
-import { Logger } from "./Logger";
+import { Logger } from "../../logger/Logger";
 
 @Service()
 export class TokenService {

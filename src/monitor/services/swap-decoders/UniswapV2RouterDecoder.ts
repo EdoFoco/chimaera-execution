@@ -3,7 +3,7 @@ import { Interface } from "ethers";
 import { UniswapV2RouterAbi } from "../../../abis/UniswapV2RouterAbi";
 import { ISwapDecoder, ISwapTransactionDecoded } from "src/types";
 import { TransactionResponse } from "alchemy-sdk";
-import { Logger } from "../Logger";
+import { Logger } from "../../../logger/Logger";
 
 @Service()
 export class UniswapV2RouterDecoder implements ISwapDecoder {

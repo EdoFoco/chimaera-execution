@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 import { IGroup, IRule, ITrackedToken, RuleTypeEnum, IMinCallersBuyRule } from "../../../types";
-import { Logger } from "../Logger";
+import { Logger } from "../../../logger/Logger";
 import { IRuleProcessor } from "./IRuleProcessor";
 import TelegramService from "../TelegramService";
 import { GroupRepository } from "../../../dal/repos/mongodb/GroupRepository";

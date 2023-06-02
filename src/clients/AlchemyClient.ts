@@ -1,6 +1,6 @@
 import { Inject, Service } from "typedi";
 import { Alchemy, TokenMetadataResponse, TransactionResponse } from "alchemy-sdk";
-import { Logger } from "../monitor/services/Logger";
+import { Logger } from "../logger/Logger";
 
 @Service()
 export class AlchemyClient {

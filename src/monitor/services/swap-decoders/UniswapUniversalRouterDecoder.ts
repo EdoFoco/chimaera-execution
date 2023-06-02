@@ -4,7 +4,7 @@ import { TransactionResponse } from "alchemy-sdk";
 import { Interface, AbiCoder, Result } from "ethers";
 import { ISwapTransactionDecoded, ISwapDecoder } from "../../../types";
 import { UniswapUniversalRouterAbi } from "../../../abis/UniswapUniversalRouterAbi";
-import { Logger } from "../Logger";
+import { Logger } from "../../../logger/Logger";
 
 @Service()
 export class UniswapUniversalRouterDecoder implements ISwapDecoder{

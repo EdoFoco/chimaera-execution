@@ -3,7 +3,7 @@ import { Interface } from "ethers";
 import { OneInchV5RouterAbi } from "../../../abis/OneInchV5RouterAbi";
 import { ISwapDecoder, ISwapTransactionDecoded } from "src/types";
 import { TransactionResponse } from "alchemy-sdk";
-import { Logger } from "../Logger";
+import { Logger } from "../../../logger/Logger";
 
 @Service()
 export class OneInchV5RouterDecoder implements ISwapDecoder {

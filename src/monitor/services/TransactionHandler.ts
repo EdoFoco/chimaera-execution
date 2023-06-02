@@ -2,7 +2,7 @@ import { Transaction } from "ethers";
 import { Service } from "typedi";
 import { SwapService } from "./SwapService";
 import { AlchemyClient } from "../../clients/AlchemyClient";
-import { Logger } from "./Logger";
+import { Logger } from "../../logger/Logger";
 import { TokenService } from "./TokenService";
 import { GroupRepository } from "../../dal/repos/mongodb/GroupRepository";
 import { ICaller, IGroup, ITrackedToken } from "../../types";

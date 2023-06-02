@@ -3,7 +3,7 @@ import Container from "typedi";
 import mongoose from "mongoose";
 import { Alchemy } from 'alchemy-sdk';
 import { ISwapDecoder } from '../types';
-import { Logger } from './services/Logger';
+import { Logger } from '../logger/Logger';
 import { buildConfig } from '../config/Config';
 import { MongoConfig } from '../config/MongoConfig';
 import { WalletTracker } from './services/WalletTracker';
@@ -11,9 +11,7 @@ import { IRuleProcessor } from './services/rule-processors/IRuleProcessor';
 import { MinCallersBuyProcessor } from './services/rule-processors/MinCallersBuyProcessor';
 import { OneInchV5RouterDecoder, UniswapUniversalRouterDecoder, UniswapV2RouterDecoder } from './services/swap-decoders';
 
-
 const main = async () => {
-
     const config = buildConfig();
     Container.set("alchemy", new Alchemy(config.alchemy));
     Container.set("syncIntervalMin", config.walletTracker.syncIntervalMin);
