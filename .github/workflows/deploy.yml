@@ -23,12 +23,12 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
       - name: Download task definition
         run: |
-          aws ecs describe-task-definition --task-definition libra-wallet-hunter --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition chimaera --query taskDefinition > task-definition.json
       - name: Build, tag, and push image to Amazon
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: libra-wallet-hunter
+          ECR_REPOSITORY: chimaera
           IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -39,7 +39,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
-          container-name: libra-wallet-hunter
+          container-name: chimaera
           image: ${{ steps.build-image.outputs.image }}
       - name: Deploy AWS ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1

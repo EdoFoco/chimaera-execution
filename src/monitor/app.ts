@@ -39,12 +39,12 @@ const main = async () => {
     const logger = Container.get(Logger);
     const monitor = Container.get(WalletTracker);
 
-    logger.info("Libra - Even Your Odds is starting...  ")
+    logger.info("Chimaera - Even Your Odds is starting...  ")
     await initDb(config.mongo);
     logger.info("Db connected.");
 
     await monitor.monitorGroups();
-    logger.info("Libra is monitoring...");
+    logger.info("Chimaera is monitoring...");
 }
 
 const initDb = async(config: MongoConfig) => {

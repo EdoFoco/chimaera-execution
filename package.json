@@ -1,11 +1,10 @@
 {
-  "name": "libra",
+  "name": "chimaera",
   "version": "1.0.0",
-  "description": "Swap signal detector. Analysing groups of wallets and triggering swap notifications when rules are met. ",
-  "main": "src/monitor/app.ts",
+  "description": "Chimaera - Find ERC-20 opportunities early",
   "scripts": {
-    "dev": "ts-node-dev --respawn -- src/monitor/app.ts",
-    "start": "ts-node src/monitor/app.ts",
+    "dev-monitor": "ts-node-dev --respawn -- src/monitor/app.ts",
+    "start-monitor": "ts-node src/monitor/app.ts",
     "test": "jest",
     "test:cover": "jest --config ./jest.config.ts --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --watchAll=false",
     "build": "tsc",
@@ -37,6 +36,7 @@
     "typeorm-typedi-extensions": "^0.4.1"
   },
   "keywords": [
+    "chimaera",
     "ethereum",
     "crypto",
     "wallet",
